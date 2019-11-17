@@ -22,6 +22,8 @@ namespace CTFWebApp.Controllers
             _userManager = userManager;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User); //get user from httpcontext
+
         // GET: Teams
         public async Task<IActionResult> Index()
         {
@@ -177,9 +179,8 @@ namespace CTFWebApp.Controllers
 
             return View(viewModel);
         }
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User); //get user from httpcontext
-
-        //put data into TeamDetailsViewModel
+        
+        //put data into MyTeamDetailsViewModel
         private async Task<MyTeamDetailsViewModel> GetMyTeamDetailsViewModel(Team team)
         {
 

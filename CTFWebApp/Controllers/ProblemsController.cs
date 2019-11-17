@@ -7,17 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CTFWebApp.Data;
 using CTFWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CTFWebApp.Controllers
 {
     public class ProblemsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<ApplicationUser> _userManager;
 
-        public ProblemsController(ApplicationDbContext context)
+        public ProblemsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User); //get user from httpcontext
 
         // GET: Problems
         public async Task<IActionResult> Index()
@@ -78,7 +83,28 @@ namespace CTFWebApp.Controllers
             {
                 if (submittedProblem.SubmittedAnswer.Equals(problem.Answer))
                 {
-                    return RedirectToAction("Index", "Teams");
+                    var CurrentUser = new ApplicationUser();
+                    CurrentUser = await GetCurrentUserAsync();
+                    await _context.Entry(CurrentUser).Reference(x => x.MyTeam).LoadAsync(); //explicitly load myTeam because of lazy loading
+
+                    CurrentUser.MyTeam.Score += problem.Points;
+                    try
+                    {
+                        _context.Update(CurrentUser);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProblemExists(problem.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction("MyTeam", "Teams");
                 }
             }
             return RedirectToAction("Details", "Problems"); //refresh
