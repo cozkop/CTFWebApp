@@ -35,13 +35,55 @@ namespace CTFWebApp.Controllers
 
             var problem = await _context.Problem
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+           
             if (problem == null)
             {
                 return NotFound();
             }
 
-            return View(problem);
+            SubmitProblemViewModel submitProblemVM = new SubmitProblemViewModel();
+
+            submitProblemVM.Id = problem.Id;
+            submitProblemVM.ProblemName = problem.ProblemName;
+            submitProblemVM.ProblemDescription = problem.ProblemDescription;
+            submitProblemVM.ProblemLevel = problem.ProblemLevel;
+            submitProblemVM.Points = problem.Points;
+
+
+            return View(submitProblemVM);
         }
+
+        // POST: Problems/Details/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details(int id, [Bind("Id,ProblemName,ProblemDescription,ProblemLevel,Points,SubmittedAnswer")] SubmitProblemViewModel submittedProblem)
+        {
+            if (id != submittedProblem.Id)
+            {
+                return NotFound();
+            }
+
+            var problem = await _context.Problem
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (problem == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                if (submittedProblem.SubmittedAnswer.Equals(problem.Answer))
+                {
+                    return RedirectToAction("Index", "Teams");
+                }
+            }
+            return RedirectToAction("Details", "Problems"); //refresh
+        }
+
 
         // GET: Problems/Create
         public IActionResult Create()
@@ -54,7 +96,7 @@ namespace CTFWebApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProblemName,ProblemDescription,Points,Answer,SubmittedAnswer")] Problem problem)
+        public async Task<IActionResult> Create([Bind("Id,ProblemName,ProblemDescription,ProblemLevel,Points,Answer")] Problem problem)
         {
             if (ModelState.IsValid)
             {
