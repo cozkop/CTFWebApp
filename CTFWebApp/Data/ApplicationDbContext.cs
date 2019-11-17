@@ -13,5 +13,7 @@ namespace CTFWebApp.Data
             : base(options)
         {
         }
+        public DbSet<Problem> Problem { get; set; }
+        public DbSet<Team> Team { get; set; }
     }
 }

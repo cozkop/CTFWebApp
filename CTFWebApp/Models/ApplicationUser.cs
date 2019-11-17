@@ -10,6 +10,8 @@ namespace CTFWebApp.Models
     {
         public ApplicationUser() : base() { }
 
+        public Team MyTeam { get; set; }
+        
         public bool captain { get; set; }
 
     }

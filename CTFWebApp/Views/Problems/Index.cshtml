@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CTFWebApp.Models.Problem>
+
+@{
+    ViewData["Title"] = "Problems Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Problems!</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProblemName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProblemLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Points)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProblemName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProblemLevel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Points)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
