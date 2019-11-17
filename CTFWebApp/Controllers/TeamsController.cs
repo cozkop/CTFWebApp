@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CTFWebApp.Data;
 using CTFWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CTFWebApp.Controllers
 {
     public class TeamsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<ApplicationUser> _userManager;
 
-        public TeamsController(ApplicationDbContext context)
+        public TeamsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Teams
@@ -149,5 +152,48 @@ namespace CTFWebApp.Controllers
         {
             return _context.Team.Any(e => e.Id == id);
         }
+
+        // GET: Teams/MyTeam/5
+        public async Task<IActionResult> MyTeam(Team team)
+        {
+
+
+            var CurrentUser = new ApplicationUser();
+            CurrentUser = await GetCurrentUserAsync();
+
+            if (CurrentUser == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Entry(CurrentUser).Reference(x => x.MyTeam).LoadAsync(); //explicitly load myTeam because of lazy loading
+
+            if (CurrentUser.MyTeam == null)
+            {
+                return NotFound();
+            }
+
+            MyTeamDetailsViewModel viewModel = await GetMyTeamDetailsViewModel(CurrentUser.MyTeam);
+
+            return View(viewModel);
+        }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User); //get user from httpcontext
+
+        //put data into TeamDetailsViewModel
+        private async Task<MyTeamDetailsViewModel> GetMyTeamDetailsViewModel(Team team)
+        {
+
+            MyTeamDetailsViewModel viewModel = new MyTeamDetailsViewModel();
+
+            viewModel.Team = team;
+
+            List<ApplicationUser> usersInTeam = await _context.Users
+                .Where(m => m.MyTeam == team).ToListAsync();
+
+            viewModel.ApplicationUsers = usersInTeam;
+            return viewModel;
+
+        }
+
     }
 }

@@ -23,6 +23,8 @@ namespace CTFWebApp.Models
         public int Points { get; set; }
 
         public string Answer { get; set; }
-        
+
+        public List<TeamCompletedProblem> TeamCompletedProblems { get; set; }
+
     }
 }

@@ -18,5 +18,7 @@ namespace CTFWebApp.Models
         public string TeamDescription { get; set; }
 
         public int Score { get; set; }
+
+        public List<TeamCompletedProblem> TeamCompletedProblems { get; set; }
     }
 }

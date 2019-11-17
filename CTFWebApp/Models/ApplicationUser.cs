@@ -12,7 +12,7 @@ namespace CTFWebApp.Models
 
         public Team MyTeam { get; set; }
         
-        public bool captain { get; set; }
+        public bool Captain { get; set; }
 
     }
 }
