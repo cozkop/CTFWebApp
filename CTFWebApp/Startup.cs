@@ -44,12 +44,12 @@ namespace CTFWebApp
             .AddRoleManager<RoleManager<ApplicationRole>>()
             .AddDefaultUI()
             .AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
