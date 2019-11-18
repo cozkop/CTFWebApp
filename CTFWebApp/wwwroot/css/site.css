@@ -18,6 +18,8 @@ body {
     line-height: 1.4;
 }
 
+/*You have find the second part of the flag! The flag is: CSS-FLAG}*/
+
 /* Make .svg files in the carousel display properly in older browsers */
 .carousel-inner .item img[src$=".svg"] {
     width: 100%;

@@ -217,5 +217,11 @@ namespace CTFWebApp.Controllers
         {
             return _context.Problem.Any(e => e.Id == id);
         }
+
+        public IActionResult Problem2()
+        {
+            return View();
+        }
+
     }
 }
